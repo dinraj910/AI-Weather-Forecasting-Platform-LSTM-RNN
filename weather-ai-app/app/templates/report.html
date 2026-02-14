@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold">Forecast Report</h2>
+        <p class="text-muted">Detailed breakdown of future weather conditions.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card weather-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">7-Day Forecast Data</h5>
+                <button class="btn btn-success" onclick="exportTableToCSV('forecast_report.csv')">
+                    <i class="fas fa-file-csv me-2"></i>Download CSV
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover" id="reportTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Predicted Temp (°C)</th>
+                            <th>Trend</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', loadReportData);
+
+    async function loadReportData() {
+        const tbody = document.getElementById('reportTableBody');
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="spinner-border text-primary"></div></td></tr>';
+
+        try {
+            // 1. Fetch History to get the start date
+            const histRes = await fetch('/api/history?hours=1');
+            const histData = await histRes.json();
+
+            if (histData.error) throw new Error(histData.error);
+
+            let lastDate = new Date();
+            if (histData.dates && histData.dates.length > 0) {
+                lastDate = new Date(histData.dates[histData.dates.length - 1]);
+            }
+
+            // 2. Fetch 7-day forecast
+            const res = await fetch('/api/predict_7d?model=multi');
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            tbody.innerHTML = '';
+
+            // 3. Render Rows
+            data.forecast.forEach((temp, index) => {
+                const hourOffset = data.hours[index];
+
+                // Calculate prediction time
+                const d = new Date(lastDate);
+                d.setHours(d.getHours() + hourOffset);
+
+                const prevTemp = index > 0 ? data.forecast[index - 1] : temp; // Compare to prev hour
+
+                let trend = 'Stable';
+                let trendClass = 'text-warning';
+
+                if (temp > prevTemp + 0.1) {
+                    trend = '↑ Rising';
+                    trendClass = 'text-success';
+                } else if (temp < prevTemp - 0.1) {
+                    trend = '↓ Falling';
+                    trendClass = 'text-danger';
+                }
+
+                const row = `
+                    <tr>
+                        <td>${d.toLocaleString()}</td>
+                        <td>${temp.toFixed(2)}</td>
+                        <td><span class="${trendClass}">${trend}</span></td>
+                        <td><span class="badge bg-secondary">Model Estimate</span></td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+
+        } catch (err) {
+            console.error(err);
+            tbody.innerHTML = `<tr><td colspan="4" class="text-danger">Error loading report: ${err.message}</td></tr>`;
+        }
+    }
+
+    function exportTableToCSV(filename) {
+        const table = document.getElementById("reportTable");
+        let csv = [];
+        // Get rows
+        const rows = document.querySelectorAll("table tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++)
+                row.push(cols[j].innerText);
+
+            csv.push(row.join(","));
+        }
+
+        downloadCSV(csv.join("\n"), filename);
+    }
+
+    function downloadCSV(csv, filename) {
+        let csvFile;
+        let downloadLink;
+
+        csvFile = new Blob([csv], { type: "text/csv" });
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+</script>
+{% endblock %}
