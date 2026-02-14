@@ -148,9 +148,20 @@ weather-ai-app/
 
 ## 📸 Screenshots
 
-| **Dashboard Dark Mode** | **Interactive Forecasting** |
-|:---:|:---:|
-| <img src="https://placehold.co/600x400/1e1e2f/FFF?text=Dark+Mode+Dashboard" alt="Dark Mode" /> | <img src="https://placehold.co/600x400/1e1e2f/FFF?text=Interactive+Charts" alt="Forecast" /> |
+
+![alt text](screenshots/2.png)
+
+![alt text](screenshots/3.png)
+
+![alt text](screenshots/4.png)
+
+![alt text](screenshots/5.png)
+
+![alt text](screenshots/6.png)
+
+![alt text](screenshots/1.png)
+
+![alt text](screenshots/7.png)
 
 ---
 
