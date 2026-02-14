@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2 class="fw-bold">Weather Dashboard</h2>
+        <p class="text-muted">Simulated Forecast from Latest Data: <span id="latestTimestamp">Loading...</span></p>
+    </div>
+    <div class="col-md-6 text-end">
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="refreshForecast()">
+                <i class="fas fa-sync-alt me-2"></i>Refresh
+            </button>
+            <button class="btn btn-outline-secondary" onclick="exportData()">
+                <i class="fas fa-file-export me-2"></i>Export
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Metrics Row -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card weather-card h-100 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="metric-label">Current Temp</span>
+                <i class="fas fa-thermometer-half text-warning fa-2x"></i>
+            </div>
+            <div class="metric-value">
+                <span id="currentTemp">--</span><span class="fs-4">&deg;C</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card weather-card h-100 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="metric-label">Next Hour Prediction</span>
+                <i class="fas fa-clock text-info fa-2x"></i>
+            </div>
+            <div class="metric-value">
+                <span id="nextHourTemp">--</span><span class="fs-4">&deg;C</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card weather-card h-100 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="metric-label">Trend (24h)</span>
+                <span id="trendIcon" class="trend-indicator"><i class="fas fa-minus"></i></span>
+            </div>
+            <div class="metric-value fs-3" id="trendText">
+                Stable
+            </div>
+            <small class="text-muted mt-2">Based on forecast trajectory</small>
+        </div>
+    </div>
+</div>
+
+<!-- Controls & Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card weather-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Temperature Forecast</h4>
+                <div class="d-flex gap-2">
+                    <select class="form-select w-auto" id="modelSelect" onchange="updateForecast()">
+                        <option value="single">Single-Output LSTM (Temp Only)</option>
+                        <option value="multi">Multivariate Dynamic LSTM</option>
+                    </select>
+                    <select class="form-select w-auto" id="horizonSelect" onchange="updateForecast()">
+                        <option value="24h">Next 24 Hours</option>
+                        <option value="7d">Next 7 Days</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chart-container" id="chartContainer">
+                <div id="weatherChart"></div>
+                <div id="loadingSpinner" class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analysis -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card weather-card p-4 h-100">
+            <h5 class="mb-3">Model Performance (Historical Test)</h5>
+            <div class="table-responsive">
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>RMSE</td>
+                            <td><span id="rmseVal">--</span></td>
+                            <td><span class="badge bg-success">Good</span></td>
+                        </tr>
+                        <tr>
+                            <td>MAE</td>
+                            <td><span id="maeVal">--</span></td>
+                            <td><span class="badge bg-success">Good</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card weather-card p-4 h-100 bg-primary text-white" style="background: var(--primary-gradient);">
+            <h5 class="mb-3">System Info</h5>
+            <p>This system uses a Recursive LSTM architecture trained on the Jena Climate Dataset.
+                The multivariate model maintains cross-feature dependencies (Pressure, Humidity, etc.) for stable
+                long-term forecasting.</p>
+            <div class="mt-auto">
+                <small class="opacity-75">Last model update: 2024-05-20</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
