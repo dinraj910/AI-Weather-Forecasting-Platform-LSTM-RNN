@@ -1,7 +1,7 @@
 
 <div align="center">
 
-![Header](https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=300&section=header&text=AI%20Weather%20Forecasting%20Platform&fontSize=60&animation=fadeIn&fontAlignY=38&desc=Next-Gen%20Deep%20Learning%20Weather%20Analytics&descAlignY=55&descSize=25)
+![Header](https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=300&section=header&text=AI%20Weather%20Forecasting%20Platform&fontSize=40&animation=fadeIn&fontAlignY=38&desc=Next-Gen%20Deep%20Learning%20Weather%20Analytics&descAlignY=55&descSize=25)
 
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
@@ -121,7 +121,7 @@ weather-ai-app/
 
 1.  **Clone the Repository**
     ```bash
-    git clone https://github.com/yourusername/weather-ai-app.git
+    git clone https://github.com/dinraj910/-AI-Weather-Forecasting-Platform-LSTM.git
     cd weather-ai-app
     ```
 
@@ -239,12 +239,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 <div align="center">
 
-**Your Name / Antigravity**
+**Dinraj**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)]()
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)]()
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)]()
-
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/dinraj910)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:dinrajdinesh564@gmail.com)
 </div>
 
 ---
@@ -254,8 +252,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 If you like what you see, give this project a **STAR**!
 
 <div align="center">
-  <a href="#">
-    <img src="https://img.shields.io/github/stars/yourusername/weather-ai-app?style=social&label=Star" alt="GitHub Stars">
+  <a href="https://github.com/dinraj910/-AI-Weather-Forecasting-Platform-LSTM">
+    <img src="https://img.shields.io/github/stars/dinraj910/-AI-Weather-Forecasting-Platform-LSTM?style=social&label=Star" alt="GitHub Stars">
   </a>
 </div>
 
