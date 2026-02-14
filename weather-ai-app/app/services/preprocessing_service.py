@@ -1,4 +1,5 @@
 
+import os
 import pandas as pd
 import numpy as np
 import joblib
@@ -45,14 +46,22 @@ class PreprocessingService:
     def get_recent_data(self, window_size=72):
          """Returns the last `window_size` scaled data points for prediction."""
          if self._data.empty:
+             print("DEBUG: _data is empty inside get_recent_data")
              return None
          
          raw_tail = self._data.tail(window_size)
+         print(f"DEBUG: raw_tail len={len(raw_tail)}, required={window_size}")
+         
          if len(raw_tail) < window_size:
-             return None # Not enough data
+             print("DEBUG: Not enough data!")
+             return None
              
-         scaled_tail = self._scaler.transform(raw_tail)
-         return np.array([scaled_tail]) # Shape (1, window_size, features)
+         try:
+             scaled_tail = self._scaler.transform(raw_tail)
+             return np.array([scaled_tail]) # Shape (1, window_size, features)
+         except Exception as e:
+             print(f"DEBUG: Scaler transform failed: {e}")
+             return None
 
     def inverse_transform_prediction(self, prediction, is_multivariate=False):
         """
