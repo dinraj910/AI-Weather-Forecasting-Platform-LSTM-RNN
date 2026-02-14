@@ -1,54 +1,36 @@
 
 import os
 import sys
-import traceback
+import pandas as pd
+from app.config import Config
+from app.services.preprocessing_service import PreprocessingService
+from app.services.forecasting_service import ForecastingService
 
-# Add current directory to path so we can import app
-sys.path.append(os.getcwd())
+# Force unbuffered output
+sys.stdout.reconfigure(line_buffering=True)
+
+print(f"Current CWD: {os.getcwd()}")
+print(f"Config RECENT_DATA_PATH: {Config.RECENT_DATA_PATH}")
+print(f"File exists? {os.path.exists(Config.RECENT_DATA_PATH)}")
 
 try:
-    print("Importing Config...")
-    from app.config import Config
-    print("Config imported.")
+    print("Testing direct pandas read...")
+    df = pd.read_csv(Config.RECENT_DATA_PATH, index_col=0, parse_dates=True)
+    print(f"Direct read shape: {df.shape}")
+    print(f"Direct read head index: {df.index[0]}")
+except Exception as e:
+    print(f"Direct read failed: {e}")
 
-    print("Importing PreprocessingService...")
-    from app.services.preprocessing_service import PreprocessingService
-    print("PreprocessingService imported.")
+print("Initializing PreprocessingService...")
+service = PreprocessingService.get_instance()
+if service._data is None or service._data.empty:
+    print("Preproc Service data is EMPTY")
+else:
+    print(f"Preproc Service data shape: {service._data.shape}")
 
-    print("Initializing PreprocessingService...")
-    service = PreprocessingService.get_instance()
-    print("PreprocessingService initialized.")
-    
-    print("Checking data...")
-    if service._data is None or service._data.empty:
-        print("ERROR: Data is empty!")
-    else:
-        print(f"Data loaded: {len(service._data)} rows")
-        print(f"Columns: {service._data.columns.tolist()}")
-        print(f"Head index: {service._data.index[0]}")
+print("Initializing ForecastingService...")
+forecast = ForecastingService.get_instance()
 
-    print("Checking scaler...")
-    if service._scaler is None:
-        print("ERROR: Scaler is None!")
-    else:
-        print("Scaler is loaded.")
-
-    print("Importing ForecastingService...")
-    from app.services.forecasting_service import ForecastingService
-    print("ForecastingService imported.")
-
-    print("Initializing ForecastingService...")
-    forecast_service = ForecastingService.get_instance()
-    print("ForecastingService initialized.")
-
-    print("Testing predictions...")
-    pred = forecast_service.predict_next_hour('single')
-    print(f"Next hour prediction (single): {pred}")
-
-    pred_multi = forecast_service.predict_next_hour('multi')
-    print(f"Next hour prediction (multi): {pred_multi}")
-
-    print("Debug complete.")
-
-except Exception:
-    traceback.print_exc()
+print("Testing Prediction...")
+pred = forecast.predict_next_hour('single')
+print(f"Prediction result: {pred}")

@@ -24,25 +24,30 @@ class ForecastingService:
         try:
             print("Loading LSTM models...")
             # Load single-output model
-            self._models['single'] = tf.keras.models.load_model(Config.LSTM_MODEL_PATH)
+            self._models['single'] = tf.keras.models.load_model(Config.LSTM_MODEL_PATH, compile=False)
             # Load multivariate model
-            self._models['multi'] = tf.keras.models.load_model(Config.MULTIVARIATE_MODEL_PATH)
+            self._models['multi'] = tf.keras.models.load_model(Config.MULTIVARIATE_MODEL_PATH, compile=False)
             print("Models loaded successfully.")
         except Exception as e:
             print(f"Error loading models: {e}")
 
     def predict_next_hour(self, model_type='single'):
         """Predicts the next hour's temperature."""
-        # Get recent 72h data
+        print(f"DEBUG: Predicting with model={model_type}")
         input_data = self.preprocessing_service.get_recent_data(Config.WINDOW_SIZE)
+        
         if input_data is None:
+            print("DEBUG: input_data is None!")
             return None
         
         model = self._models.get(model_type)
         if not model:
+            print(f"DEBUG: Model {model_type} not found in {self._models.keys()}")
             return None
 
+        print(f"DEBUG: input shape: {input_data.shape}")
         prediction = model.predict(input_data)
+        print(f"DEBUG: raw prediction: {prediction}")
         
         # Inverse transform
         if model_type == 'multi':
